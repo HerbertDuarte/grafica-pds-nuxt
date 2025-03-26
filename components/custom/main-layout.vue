@@ -33,7 +33,7 @@ const tabs = [
         </RouterLink>
       </div>
     </div>
-    <div class="pl-20 min-h-[200vh]">
+    <div class="pl-20">
       <slot />
     </div>
   </div>
