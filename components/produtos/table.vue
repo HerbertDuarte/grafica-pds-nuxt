@@ -10,7 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button } from "../ui/button";
+import SearchInput from "../custom/search-input.vue";
 
 const { toast } = useToast();
 const {
@@ -19,6 +20,26 @@ const {
   status,
 } = useFetch<Produto[]>("/api/produto/get-all");
 
+const busca = ref("");
+const realizarBusca = () => {
+  changePage(1);
+};
+
+const produtosFiltrados = computed(() => {
+  if (!produtos.value) return [];
+
+  if (!busca.value.trim()) return produtos.value;
+
+  const termoBusca = busca.value.toLowerCase().trim();
+  return produtos.value.filter(
+    (produto) =>
+      produto.nome.toLowerCase().includes(termoBusca) ||
+      produto.descricao?.toLowerCase().includes(termoBusca) ||
+      produto.id.toString().includes(termoBusca) ||
+      produto.preco.toString().includes(termoBusca)
+  );
+});
+
 const {
   itemsPerPage,
   currentPage,
@@ -26,7 +47,7 @@ const {
   totalPages,
   paginatedItems,
   changePage,
-} = usePagination(produtos, 3);
+} = usePagination(produtosFiltrados, 3);
 
 watch(
   () => error,
@@ -39,17 +60,29 @@ watch(
     }
   }
 );
+
+watch(busca, () => {
+  changePage(1);
+});
 </script>
 <template>
-  <div class="p-8 border rounded-xl space-y-4">
+  <div class="space-y-3">
     <div class="flex items-start justify-between">
-      <p>Tabela de produtos</p>
+      <div>
+        <p>Tabela de produtos</p>
+      </div>
       <Button>Cadastrar produto</Button>
     </div>
-
+    <div class="flex items-center gap-2">
+      <SearchInput
+        v-model="busca"
+        placeholder="Pesquisar produto"
+        @search="realizarBusca"
+      />
+    </div>
     <Table>
       <TableCaption
-        v-if="status !== 'pending' && produtos && produtos.length === 0"
+        v-if="status !== 'pending' && produtosFiltrados.length === 0"
       >
         Nenhum produto para ser listado.
       </TableCaption>
@@ -92,8 +125,10 @@ watch(
     </Table>
     <div v-if="totalItems > 0" class="flex items-center justify-between">
       <p class="text-sm text-slate-500">
-        Página {{ currentPage }} de
-        {{ totalPages || 1 }}
+        <span v-if="status !== 'pending'">
+          Página {{ currentPage }} de {{ totalPages || 1 }}</span
+        >
+        <span v-else>Página 1/...</span>
       </p>
       <CustomPaginator
         :change-page="changePage"
