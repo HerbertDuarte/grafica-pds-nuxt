@@ -1,6 +1,10 @@
 <script setup lang="ts"></script>
 <template>
-  <CustomContainer title="Produtos">
-    <p>tabela produtos</p>
-  </CustomContainer>
+  <div>
+    <CustomContainer title="Produtos">
+      <div class="pt-8">
+        <ProdutosTable />
+      </div>
+    </CustomContainer>
+  </div>
 </template>

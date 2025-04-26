@@ -9,6 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "prisma": {
+    "schema": "./server/prisma/schema.prisma"
+  },
   "dependencies": {
     "@nuxt/content": "^3.4.0",
     "@nuxt/eslint": "^1.2.0",
@@ -25,7 +28,7 @@
     "nuxt": "^3.16.1",
     "nuxt-lucide-icons": "^1.0.5",
     "prisma": "^6.5.0",
-    "reka-ui": "^2.1.1",
+    "reka-ui": "^2.2.0",
     "shadcn-nuxt": "^1.0.3",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",

@@ -16,7 +16,7 @@ const tabs = [
 </script>
 <template>
   <div>
-    <div class="p-4 border-r bg-white min-h-screen fixed">
+    <div class="p-4 border-r bg-white min-h-screen fixed z-50">
       <Button class="p-3 mb-3" variant="secondary" @click="handleShow">
         <LucideMenu />
       </Button>
