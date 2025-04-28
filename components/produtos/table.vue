@@ -18,6 +18,7 @@ const {
   data: produtos,
   error,
   status,
+  refresh,
 } = useFetch<Produto[]>("/api/produto/get-all");
 
 const busca = ref("");
@@ -47,7 +48,11 @@ const {
   totalPages,
   paginatedItems,
   changePage,
-} = usePagination(produtosFiltrados, 3);
+} = usePagination(produtosFiltrados, 10);
+
+const refreshProdutos = () => {
+  refresh();
+};
 
 watch(
   () => error,
@@ -71,7 +76,7 @@ watch(busca, () => {
       <div>
         <p>Tabela de produtos</p>
       </div>
-      <Button>Cadastrar produto</Button>
+      <ProdutosCreate @produtoCriado="refreshProdutos" />
     </div>
     <div class="flex items-center gap-2">
       <SearchInput
