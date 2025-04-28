@@ -18,7 +18,7 @@ const {
   data: produtos,
   error,
   status,
-} = useFetch<Produto[]>("/api/produto/get-all");
+} = useLazyFetch<Produto[]>("/api/produto/get-all");
 
 const busca = ref("");
 const realizarBusca = () => {
@@ -81,11 +81,6 @@ watch(busca, () => {
       />
     </div>
     <Table>
-      <TableCaption
-        v-if="status !== 'pending' && produtosFiltrados.length === 0"
-      >
-        Nenhum produto para ser listado.
-      </TableCaption>
       <TableHeader>
         <TableRow class="bg-slate-100 font-bold">
           <TableHead class="font-bold"> ID </TableHead>
