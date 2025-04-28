@@ -18,7 +18,7 @@ const {
   data: produtos,
   error,
   status,
-} = useLazyFetch<Produto[]>("/api/produto/get-all");
+} = useFetch<Produto[]>("/api/produto/get-all");
 
 const busca = ref("");
 const realizarBusca = () => {
