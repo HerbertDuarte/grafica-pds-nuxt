@@ -77,7 +77,6 @@ const createProduct = async () => {
       },
     });
 
-    // WIP: Verificar se o produto foi criado com sucesso
     toast({
       title: "Produto cadastrado!",
       description: "O produto foi criado com sucesso.",
