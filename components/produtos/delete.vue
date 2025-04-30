@@ -11,14 +11,17 @@
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+          <AlertDialogTitle
+            >Tem certeza que deseja deletar esse produto?</AlertDialogTitle
+          >
           <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Isso excluirá permanentemente este produto do sistema.
+            Esta ação não pode ser desfeita. Isso excluirá permanentemente este
+            produto do sistema.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction @click="deleteProduct" >Excluir</AlertDialogAction>
+          <AlertDialogAction @click="deleteProduct">Excluir</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -46,7 +49,7 @@ const props = defineProps<{
 }>();
 
 const id = ref(props.id);
-const { toast } = useToast(); 
+const { toast } = useToast();
 const emit = defineEmits(["produtoDeletado"]);
 
 const deleteProduct = async () => {
@@ -55,15 +58,12 @@ const deleteProduct = async () => {
       method: "DELETE",
     });
 
-    
     toast({
       title: "Produto excluido!",
       description: "O produto foi excluido com sucesso.",
     });
 
     emit("produtoDeletado");
-    
-    
   } catch (error) {
     toast({
       title: "Erro ao excluir produto",
@@ -73,8 +73,6 @@ const deleteProduct = async () => {
     console.error("Erro ao excluir produto:", error);
   }
 };
-
-
 </script>
 
 <style></style>

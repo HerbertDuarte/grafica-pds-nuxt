@@ -91,7 +91,7 @@ watch(busca, () => {
           <TableHead class="font-bold">Nome</TableHead>
           <TableHead class="font-bold">Preço</TableHead>
           <TableHead class="font-bold"> Descrição </TableHead>
-          <TableHead class="font-bold "> Ações </TableHead>
+          <TableHead class="font-bold text-right w-[200px]"> Ações </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -100,7 +100,7 @@ watch(busca, () => {
             <div class="flex justify-center items-center">
               <span class="text-slate-500">Carregando produtos...</span>
             </div>
-          </TableCell >
+          </TableCell>
         </TableRow>
         <template v-else-if="paginatedItems?.length > 0">
           <TableRow v-for="produto in paginatedItems" :key="produto.id">
@@ -112,10 +112,16 @@ watch(busca, () => {
             <TableCell>
               {{ produto.descricao }}
             </TableCell>
-            <TableCell>
+            <TableCell class="flex items-end justify-end w-[200px]">
               <div class="flex items-center gap-2">
-                <ProdutosUpdate :produto="produto" @produtoAtualizado="refreshProdutos" />
-                <ProdutosDelete :id="produto.id" @produtoDeletado="refreshProdutos" />
+                <ProdutosUpdate
+                  :produto="produto"
+                  @produtoAtualizado="refreshProdutos"
+                />
+                <ProdutosDelete
+                  :id="produto.id"
+                  @produtoDeletado="refreshProdutos"
+                />
               </div>
             </TableCell>
           </TableRow>

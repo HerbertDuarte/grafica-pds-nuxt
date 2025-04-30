@@ -1,18 +1,29 @@
-import prisma from '~/server/prisma/client';
+import prisma from "~/server/prisma/client";
 
 export default defineEventHandler(async (event) => {
-  const id = Number(getRouterParam(event, 'id'));
+  const id = Number(getRouterParam(event, "id"));
 
   if (!id) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'ID inválido.',
+      statusMessage: "ID inválido.",
     });
   }
 
-  const produto = await prisma.produto.delete({
+  const produtoExists = await prisma.produto.findUnique({
     where: { id },
   });
 
-  return { message: 'Produto deletado com sucesso!' }
-})
+  if (!produtoExists) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "ID inválido.",
+    });
+  }
+
+  await prisma.produto.delete({
+    where: { id },
+  });
+
+  return { message: "Produto deletado com sucesso!" };
+});
