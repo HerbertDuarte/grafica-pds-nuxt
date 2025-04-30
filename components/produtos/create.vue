@@ -46,9 +46,9 @@
   </Dialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
-import { useToast } from "@/components/ui/toast"; 
+import { useToast } from "@/components/ui/toast";
 import {
   Dialog,
   DialogTrigger,
@@ -58,17 +58,18 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 const name = ref("");
 const price = ref("");
 const desc = ref("");
-const open = ref(false); 
-const { toast } = useToast(); 
+const open = ref(false);
+const { toast } = useToast();
 const emit = defineEmits(["produtoCriado"]);
 
 const createProduct = async () => {
   try {
-    const response = await $fetch("/api/produto/post-create", {
+    await useFetch("/api/produto/post-create", {
       method: "POST",
       body: {
         nome: name.value,
@@ -77,7 +78,6 @@ const createProduct = async () => {
       },
     });
 
-    // WIP: Verificar se o produto foi criado com sucesso
     toast({
       title: "Produto cadastrado!",
       description: "O produto foi criado com sucesso.",
@@ -85,24 +85,22 @@ const createProduct = async () => {
 
     emit("produtoCriado");
 
-    
     name.value = "";
     price.value = "";
     desc.value = "";
 
-    
     open.value = false;
   } catch (error) {
-    toast({
-      title: "Erro ao criar produto",
-      description: error.message || "Tente novamente.",
-      variant: "destructive",
-    });
-    console.error("Erro ao criar produto:", error);
+    if (error instanceof Error) {
+      toast({
+        title: "Erro ao criar produto",
+        description: error.message || "Tente novamente.",
+        variant: "destructive",
+      });
+      console.error("Erro ao criar produto:", error);
+    }
   }
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

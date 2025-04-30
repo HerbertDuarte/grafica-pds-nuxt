@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Button } from "../ui/button";
 import SearchInput from "../custom/search-input.vue";
 
 const { toast } = useToast();
@@ -19,7 +18,7 @@ const {
   error,
   status,
   refresh,
-} = useFetch<Produto[]>("/api/produto/get-all");
+} = useLazyFetch<Produto[]>("/api/produto/get-all");
 
 const busca = ref("");
 const realizarBusca = () => {
@@ -92,6 +91,7 @@ watch(busca, () => {
           <TableHead class="font-bold">Nome</TableHead>
           <TableHead class="font-bold">Preço</TableHead>
           <TableHead class="font-bold"> Descrição </TableHead>
+          <TableHead class="font-bold text-right w-[200px]"> Ações </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -111,6 +111,18 @@ watch(busca, () => {
             <TableCell>{{ produto.preco }}</TableCell>
             <TableCell>
               {{ produto.descricao }}
+            </TableCell>
+            <TableCell class="flex items-end justify-end w-[200px]">
+              <div class="flex items-center gap-2">
+                <ProdutosUpdate
+                  :produto="produto"
+                  @produtoAtualizado="refreshProdutos"
+                />
+                <ProdutosDelete
+                  :id="produto.id"
+                  @produtoDeletado="refreshProdutos"
+                />
+              </div>
             </TableCell>
           </TableRow>
         </template>
