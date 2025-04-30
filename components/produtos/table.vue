@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { Button } from "../ui/button";
 import SearchInput from "../custom/search-input.vue";
 
 const { toast } = useToast();
@@ -19,7 +18,7 @@ const {
   error,
   status,
   refresh,
-} = useFetch<Produto[]>("/api/produto/get-all");
+} = useLazyFetch<Produto[]>("/api/produto/get-all");
 
 const busca = ref("");
 const realizarBusca = () => {
