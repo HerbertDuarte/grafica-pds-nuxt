@@ -25,4 +25,8 @@ export default defineNuxtConfig({
     prefix: "",
     componentDir: "./components/ui",
   },
+
+  plugins: [
+    "@/plugins/mask"
+  ]
 });
