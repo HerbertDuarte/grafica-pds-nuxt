@@ -1,0 +1,34 @@
+# Arquivos de sistema e diretórios
+.git
+.github
+.vscode
+.idea
+.DS_Store
+
+# Arquivos de ambiente
+.env
+.env.*
+!.env.example
+
+# Diretórios de dependências
+node_modules
+dist
+.output
+.nuxt
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Diretório de dados do Docker
+postgres_data
+
+# Arquivos específicos
+README.md
+docker-compose.yaml
+Dockerfile
+.dockerignore
+.gitignore
