@@ -1,5 +1,5 @@
 # Estágio de build
-FROM node:18-alpine AS build
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm config set fetch-retries 5 && \
 COPY package.json package-lock.json* ./
 
 # Instala dependências com mais verbosidade
-RUN npm ci --verbose || (cat /.npm/_logs/*-debug-0.log && exit 1)
+RUN npm install --verbose || (cat /.npm/_logs/*-debug-0.log && exit 1)
 
 # Copia o restante dos arquivos
 COPY . .
@@ -29,7 +29,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Estágio de produção
-FROM node:18-alpine AS production
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
@@ -45,7 +45,7 @@ RUN npm config set fetch-retries 5 && \
 
 # Instala apenas dependências de produção
 COPY --from=build /app/package.json /app/package-lock.json* ./
-RUN npm ci --only=production --no-audit --prefer-offline --verbose || (cat /.npm/_logs/*-debug-0.log && exit 1)
+RUN npm install --only=production --no-audit --prefer-offline --verbose || (cat /.npm/_logs/*-debug-0.log && exit 1)
 
 # Copia os arquivos necessários do estágio de build
 COPY --from=build /app/.output ./.output
