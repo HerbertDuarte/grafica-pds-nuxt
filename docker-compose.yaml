@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: grafica_pds_nuxt
     environment:
+      # Usando DATABASE_URL diretamente do Coolify
       - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=${PORT:-3000}

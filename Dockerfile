@@ -36,8 +36,11 @@ COPY --from=build /app/server ./server
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 
 # Cria um script para executar as migrações e iniciar o app
-RUN echo '#!/bin/sh\nnpx prisma migrate deploy\nnode .output/server/index.mjs' > /app/start.sh && \
-    chmod +x /app/start.sh
+RUN echo '#!/bin/sh\n\
+echo "Conectando ao banco de dados: $DATABASE_URL"\n\
+npx prisma migrate deploy\n\
+node .output/server/index.mjs' > /app/start.sh && \
+chmod +x /app/start.sh
 
 # Expõe a porta
 EXPOSE 3000
