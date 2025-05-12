@@ -5,12 +5,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      # Adiciona uma configuração para maior tempo limite durante a construção
+      args:
+        - NPM_CONFIG_LOGLEVEL=${NPM_LOGLEVEL:-info}
     container_name: grafica_pds_nuxt
     environment:
       # Usando DATABASE_URL diretamente do Coolify
       - DATABASE_URL=${DATABASE_URL}
+      - DB_USER=${DB_USER:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+      - DB_HOST=${DB_HOST:-postgres}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-grafica_pds}
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=${PORT:-3000}
+      - NPM_CONFIG_LOGLEVEL=${NPM_LOGLEVEL:-info}
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
@@ -18,9 +27,17 @@ services:
     restart: unless-stopped
     networks:
       - grafica_network
+    # Adiciona configurações de saúde e memória
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 20s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    mem_limit: 1g
 
   postgres:
-    image: postgres:latest
+    image: postgres:15-alpine
     container_name: grafica_pds_postgres
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
@@ -33,6 +50,12 @@ services:
     restart: unless-stopped
     networks:
       - grafica_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-grafica_pds}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 networks:
   grafica_network:
