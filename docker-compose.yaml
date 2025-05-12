@@ -20,10 +20,13 @@ services:
       - NODE_ENV=${NODE_ENV:-production}
       - PORT=${PORT:-3000}
       - NPM_CONFIG_LOGLEVEL=${NPM_LOGLEVEL:-info}
+      # Adiciona configuração do Prisma
+      - PRISMA_SCHEMA_PATH=/app/server/prisma/schema.prisma
     ports:
       - "${PORT:-3000}:3000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - grafica_network

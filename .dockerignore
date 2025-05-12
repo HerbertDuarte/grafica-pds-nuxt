@@ -16,6 +16,9 @@ dist
 .output
 .nuxt
 
+# Certifique-se de não ignorar os arquivos do Prisma
+!server/prisma/schema.prisma
+
 # Logs
 logs
 *.log
@@ -29,6 +32,4 @@ postgres_data
 # Arquivos específicos
 README.md
 docker-compose.yaml
-Dockerfile
-.dockerignore
 .gitignore
