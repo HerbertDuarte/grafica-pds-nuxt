@@ -5,9 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      # Adiciona uma configuração para maior tempo limite durante a construção
-      args:
-        - NPM_CONFIG_LOGLEVEL=${NPM_LOGLEVEL:-info}
     container_name: grafica_pds_nuxt
     environment:
       # Usando DATABASE_URL diretamente do Coolify

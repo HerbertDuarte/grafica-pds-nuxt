@@ -47,6 +47,23 @@ RUN npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 20000 && \
     npm config set fetch-retry-maxtimeout 120000
 
+# Cria um script de entrada padrão para o Coolify
+RUN echo '#!/bin/sh\n\
+if [ -f /start.sh ]; then\n\
+  echo "Executando script de inicialização em /start.sh"\n\
+  sh /start.sh\n\
+elif [ -f /app/start.sh ]; then\n\
+  echo "Executando script de inicialização em /app/start.sh"\n\
+  sh /app/start.sh\n\
+else\n\
+  echo "ERRO: Nenhum script de inicialização encontrado!"\n\
+  echo "Procurando scripts de inicialização..."\n\
+  find / -name "start.sh" -type f 2>/dev/null\n\
+  echo "Iniciando servidor Nuxt diretamente..."\n\
+  cd /app && node .output/server/index.mjs\n\
+fi' > /entrypoint.sh && \
+chmod +x /entrypoint.sh
+
 # Copia pasta prisma do build
 COPY --from=build /app/server/prisma ./server/prisma
 
@@ -71,11 +88,11 @@ echo "Conectando ao banco de dados: $DATABASE_URL"\n\
 echo "Executando migrações Prisma..."\n\
 cd /app && npx prisma migrate deploy --schema=/app/server/prisma/schema.prisma\n\
 echo "Iniciando servidor Nuxt..."\n\
-node .output/server/index.mjs' > /app/start.sh && \
-chmod +x /app/start.sh
+node .output/server/index.mjs' > /start.sh && \
+chmod +x /start.sh
 
 # Expõe a porta
 EXPOSE 3000
 
 # Configura o comando para iniciar o aplicativo
-CMD ["/app/start.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
