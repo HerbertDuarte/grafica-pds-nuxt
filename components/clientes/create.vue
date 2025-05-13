@@ -92,27 +92,27 @@ const cpf = ref("");
 const telefone = ref("");
 const email = ref("");
 const open = ref(false);
-const error = ref<string>();
+const erros = ref<{ [key: string]: string }>({});
 const { toast } = useToast();
 const emit = defineEmits(["clienteCriado"]);
 
 const validarCampo = (campo: string) => {
   switch (campo) {
     case "nome":
-      error.value = nome.value.trim() ? "" : "Nome é obrigatório";
+      erros.value.nome = nome.value.trim() ? "" : "Nome é obrigatório";
       break;
     case "cpf":
-      error.value = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
+      erros.value.cpf = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
         ? ""
         : "CPF inválido (use 000.000.000-00)";
       break;
     case "telefone":
-      error.value = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value)
+      erros.value.telefone = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value)
         ? ""
         : "Telefone inválido (use (00) 00000-0000)";
       break;
     case "email":
-      error.value = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
+      erros.value.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
         ? ""
         : "Email inválido";
       break;
@@ -120,13 +120,12 @@ const validarCampo = (campo: string) => {
 };
 
 const validarTodos = () => {
-  error.value = undefined;
-  validarCampo("email");
-  validarCampo("telefone");
-  validarCampo("cpf");
   validarCampo("nome");
+  validarCampo("cpf");
+  validarCampo("telefone");
+  validarCampo("email");
 
-  return !!error
+  return Object.values(erros.value).every((erro) => erro === "");
 };
 
 const limparNumero = (valor: string) => valor.replace(/\D/g, "");
@@ -135,7 +134,7 @@ const createCliente = async () => {
   if (!validarTodos()) {
     toast({
       title: "Erro no formulário",
-      description: error.value,
+      description: "Preencha todos os campos corretamente.",
       variant: "destructive",
     });
     return;
@@ -163,7 +162,7 @@ const createCliente = async () => {
     cpf.value = "";
     telefone.value = "";
     email.value = "";
-    error.value = undefined;
+    erros.value = {};
     open.value = false;
   } catch (error) {
     toast({
