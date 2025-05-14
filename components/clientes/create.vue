@@ -163,6 +163,7 @@ const createCliente = async () => {
       method: "POST",
       body: {
         nome: nome.value,
+        endereco: endereco.value,
         cpf: limparNumero(cpf.value),
         telefone: limparNumero(telefone.value),
         email: email.value,
