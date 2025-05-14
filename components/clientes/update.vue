@@ -72,7 +72,6 @@ const validarCampo = (campo: string) => {
 const validarTodos = () => {
   validarCampo("nome");
   validarCampo("cpf");
-  validarCampo("endereco");
   validarCampo("telefone");
   validarCampo("email");
 
@@ -156,7 +155,6 @@ const updateCliente = async () => {
             v-model="endereco"
             class="col-span-3"
             placeholder="Av Principal, 10 - Bairro Novo."
-            @blur="validarCampo('endereco')"
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">

@@ -21,7 +21,6 @@
             v-model="nome"
             class="col-span-3"
             placeholder="Digite o nome do cliente"
-            @blur="validarCampo('nome')"
           />
         </div>
 
@@ -32,7 +31,6 @@
             v-model="endereco"
             class="col-span-3"
             placeholder="Av Principal, 10 - Bairro Novo."
-            @blur="validarCampo('endereco')"
           />
         </div>
 
@@ -46,7 +44,6 @@
             class="col-span-3"
             placeholder="000.000.000-00"
             maxlength="14"
-            @blur="validarCampo('cpf')"
           />
         </div>
 
@@ -60,7 +57,6 @@
             class="col-span-3"
             placeholder="(00) 00000-0000"
             maxlength="15"
-            @blur="validarCampo('telefone')"
           />
         </div>
 
@@ -72,7 +68,6 @@
             v-model="email"
             class="col-span-3"
             placeholder="exemplo@email.com"
-            @blur="validarCampo('email')"
           />
         </div>
       </div>
@@ -104,46 +99,22 @@ const telefone = ref("");
 const email = ref("");
 const endereco = ref("");
 const open = ref(false);
-const erros = ref<{ [key: string]: string }>({});
+const error = ref<string>();
 const { toast } = useToast();
 const emit = defineEmits(["clienteCriado"]);
 
-const validarCampo = (campo: string) => {
-  switch (campo) {
-    case "nome":
-      erros.value.nome = nome.value.trim() ? "" : "Nome é obrigatório";
-      break;
-    case "endereco":
-      erros.value.endereco = endereco.value.trim()
-        ? ""
-        : "Endereço é obrigatório";
-      break;
-    case "cpf":
-      erros.value.cpf = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
-        ? ""
-        : "CPF inválido (use 000.000.000-00)";
-      break;
-    case "telefone":
-      erros.value.telefone = /^\(\d{2}\) \d{5}-\d{4}$/.test(telefone.value)
-        ? ""
-        : "Telefone inválido (use (00) 00000-0000)";
-      break;
-    case "email":
-      erros.value.email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
-        ? ""
-        : "Email inválido";
-      break;
+
+function validaNome(){
+  if(nome.value.trim().length < 3){
+    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres."
+    return false
   }
-};
+  return true
+}
 
 const validarTodos = () => {
-  validarCampo("nome");
-  validarCampo("cpf");
-  validarCampo("telefone");
-  validarCampo("email");
-  validarCampo("endereco");
-
-  return Object.values(erros.value).every((erro) => erro === "");
+  if(!validaNome())return false
+  return true
 };
 
 const limparNumero = (valor: string) => valor.replace(/\D/g, "");
@@ -152,7 +123,7 @@ const createCliente = async () => {
   if (!validarTodos()) {
     toast({
       title: "Erro no formulário",
-      description: "Preencha todos os campos corretamente.",
+      description: error.value,
       variant: "destructive",
     });
     return;
@@ -182,7 +153,7 @@ const createCliente = async () => {
     telefone.value = "";
     endereco.value = "";
     email.value = "";
-    erros.value = {};
+    error.value = undefined;
     open.value = false;
   } catch (error) {
     toast({
