@@ -55,6 +55,7 @@ model Cliente {
     nome      String
     cpf       String
     telefone  String
+    endereco  String
     email     String   @unique
     createdAt DateTime @default(now())
     pedidos   Pedido[]

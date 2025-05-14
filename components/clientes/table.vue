@@ -36,6 +36,7 @@ const clientesFiltrados = computed(() => {
       cliente.nome.toLowerCase().includes(termoBusca) ||
       cliente.email?.toLowerCase().includes(termoBusca) ||
       cliente.id.toString().includes(termoBusca) ||
+      cliente.cpf.toLowerCase().includes(termoBusca) ||
       cliente.telefone.toString().includes(termoBusca)
   );
 });
@@ -52,6 +53,21 @@ const {
 const refreshClientes = () => {
   refresh();
 };
+
+
+function formatarCPFExibicao(cpf: string) {
+  if (!cpf) return "";
+  cpf = cpf.replace(/\D/g, "");
+  if (cpf.length !== 11) return cpf;
+  return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+}
+
+function formatarTelefoneExibicao(telefone: string) {
+  if (!telefone) return "";
+  telefone = telefone.replace(/\D/g, "");
+  if (telefone.length !== 11) return telefone;
+  return telefone.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+}
 
 watch(
   () => error,
@@ -86,23 +102,20 @@ watch(busca, () => {
       />
     </div>
     <Table>
-      <TableCaption
-        v-if="status !== 'pending' && clientesFiltrados.length === 0"
-      >
-        Nenhum cliente para ser listado.
-      </TableCaption>
       <TableHeader>
         <TableRow class="bg-slate-100 font-bold">
-          <TableHead class="font-bold"> ID </TableHead>
+          <TableHead class="font-bold">ID</TableHead>
           <TableHead class="font-bold">Nome</TableHead>
+          <TableHead class="font-bold">Endereço</TableHead>
+          <TableHead class="font-bold">CPF</TableHead>
           <TableHead class="font-bold">Email</TableHead>
           <TableHead class="font-bold">Telefone</TableHead>
           <TableHead class="font-bold text-right w-[200px]">Ações</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-if="status === 'pending'" colspan="5">
-          <TableCell colspan="5" class="text-center py-4">
+        <TableRow v-if="status === 'pending'" colspan="7">
+          <TableCell colspan="7" class="text-center py-4">
             <div class="flex justify-center items-center">
               <span class="text-slate-500">Carregando clientes...</span>
             </div>
@@ -114,9 +127,11 @@ watch(busca, () => {
               {{ cliente.id }}
             </TableCell>
             <TableCell>{{ cliente.nome }}</TableCell>
+            <TableCell>{{ cliente.endereco }}</TableCell>
+            <TableCell>{{ formatarCPFExibicao(cliente.cpf) }}</TableCell>
             <TableCell>{{ cliente.email }}</TableCell>
             <TableCell>
-              {{ cliente.telefone }}
+              {{ formatarTelefoneExibicao(cliente.telefone) }}
             </TableCell>
             <TableCell class="flex items-end justify-end w-[200px]">
               <div class="flex items-center gap-2">
@@ -133,7 +148,7 @@ watch(busca, () => {
           </TableRow>
         </template>
         <TableRow v-else>
-          <TableCell colspan="5" class="text-center py-4">
+          <TableCell colspan="7" class="text-center py-4">
             <div class="flex justify-center items-center">
               <span class="text-slate-500">Nenhum cliente encontrado</span>
             </div>

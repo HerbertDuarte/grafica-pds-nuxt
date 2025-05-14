@@ -17,6 +17,7 @@ export default defineEventHandler(async (event) => {
       },
       data: {
         nome: body.nome,
+        endereco: body.endereco,
         cpf: body.cpf,
         telefone: body.telefone,
         email: body.email,

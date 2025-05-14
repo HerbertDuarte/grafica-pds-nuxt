@@ -16,59 +16,64 @@
         <!-- NOME -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="nome" class="text-right">Nome</Label>
-          <div class="col-span-3">
-            <Input
-              id="nome"
-              v-model="nome"
-              placeholder="Digite o nome do cliente"
-              @blur="validarCampo('nome')"
-            />
-            <p v-if="erros.nome" class="text-red-500 text-sm mt-1">{{ erros.nome }}</p>
-          </div>
+          <Input
+            id="nome"
+            v-model="nome"
+            class="col-span-3"
+            placeholder="Digite o nome do cliente"
+            @blur="validarCampo('nome')"
+          />
+        </div>
+
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label for="nome" class="text-right">Endereço</Label>
+          <Input
+            id="endereco"
+            v-model="endereco"
+            class="col-span-3"
+            placeholder="Digite o nome do cliente"
+            @blur="validarCampo('nome')"
+          />
         </div>
 
         <!-- CPF -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cpf" class="text-right">CPF</Label>
-          <div class="col-span-3">
-            <Input
-              id="cpf"
-              v-model="cpf"
-              placeholder="000.000.000-00"
-              @input="formatarCPF"
-              @blur="validarCampo('cpf')"
-            />
-            <p v-if="erros.cpf" class="text-red-500 text-sm mt-1">{{ erros.cpf }}</p>
-          </div>
+          <Input
+            id="cpf"
+            v-model="cpf"
+            v-mask="'###.###.###-##'"
+            class="col-span-3"
+            placeholder="000.000.000-00"
+            maxlength="14"
+            @blur="validarCampo('cpf')"
+          />
         </div>
 
         <!-- TELEFONE -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="telefone" class="text-right">Telefone</Label>
-          <div class="col-span-3">
-            <Input
-              id="telefone"
-              v-model="telefone"
-              placeholder="(00) 00000-0000"
-              @input="formatarTelefone"
-              @blur="validarCampo('telefone')"
-            />
-            <p v-if="erros.telefone" class="text-red-500 text-sm mt-1">{{ erros.telefone }}</p>
-          </div>
+          <Input
+            id="telefone"
+            v-model="telefone"
+            v-mask="['(##) ####-####', '(##) #####-####']"
+            class="col-span-3"
+            placeholder="(00) 00000-0000"
+            maxlength="15"
+            @blur="validarCampo('telefone')"
+          />
         </div>
 
         <!-- EMAIL -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="email" class="text-right">Email</Label>
-          <div class="col-span-3">
-            <Input
-              id="email"
-              v-model="email"
-              placeholder="exemplo@email.com"
-              @blur="validarCampo('email')"
-            />
-            <p v-if="erros.email" class="text-red-500 text-sm mt-1">{{ erros.email }}</p>
-          </div>
+          <Input
+            id="email"
+            v-model="email"
+            class="col-span-3"
+            placeholder="exemplo@email.com"
+            @blur="validarCampo('email')"
+          />
         </div>
       </div>
 
@@ -97,30 +102,21 @@ const nome = ref("");
 const cpf = ref("");
 const telefone = ref("");
 const email = ref("");
+const endereco = ref("");
 const open = ref(false);
 const erros = ref<{ [key: string]: string }>({});
 const { toast } = useToast();
 const emit = defineEmits(["clienteCriado"]);
 
-const formatarCPF = (e: Event) => {
-  let value = (e.target as HTMLInputElement).value.replace(/\D/g, "");
-  value = value.replace(/(\d{3})(\d)/, "$1.$2");
-  value = value.replace(/(\d{3})(\d)/, "$1.$2");
-  value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-  cpf.value = value;
-};
-
-const formatarTelefone = (e: Event) => {
-  let value = (e.target as HTMLInputElement).value.replace(/\D/g, "");
-  value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
-  value = value.replace(/(\d{5})(\d)/, "$1-$2");
-  telefone.value = value;
-};
-
 const validarCampo = (campo: string) => {
   switch (campo) {
     case "nome":
       erros.value.nome = nome.value.trim() ? "" : "Nome é obrigatório";
+      break;
+    case "endereco":
+      erros.value.endereco = endereco.value.trim()
+        ? ""
+        : "Endereço é obrigatório";
       break;
     case "cpf":
       erros.value.cpf = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
@@ -145,9 +141,12 @@ const validarTodos = () => {
   validarCampo("cpf");
   validarCampo("telefone");
   validarCampo("email");
+  validarCampo("endereco");
 
   return Object.values(erros.value).every((erro) => erro === "");
 };
+
+const limparNumero = (valor: string) => valor.replace(/\D/g, "");
 
 const createCliente = async () => {
   if (!validarTodos()) {
@@ -164,8 +163,9 @@ const createCliente = async () => {
       method: "POST",
       body: {
         nome: nome.value,
-        cpf: cpf.value,
-        telefone: telefone.value,
+        endereco: endereco.value,
+        cpf: limparNumero(cpf.value),
+        telefone: limparNumero(telefone.value),
         email: email.value,
       },
     });
@@ -180,6 +180,7 @@ const createCliente = async () => {
     nome.value = "";
     cpf.value = "";
     telefone.value = "";
+    endereco.value = "";
     email.value = "";
     erros.value = {};
     open.value = false;
