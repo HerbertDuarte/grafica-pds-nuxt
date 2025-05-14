@@ -25,6 +25,17 @@
           />
         </div>
 
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label for="nome" class="text-right">Endereço</Label>
+          <Input
+            id="endereco"
+            v-model="endereco"
+            class="col-span-3"
+            placeholder="Digite o nome do cliente"
+            @blur="validarCampo('nome')"
+          />
+        </div>
+
         <!-- CPF -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cpf" class="text-right">CPF</Label>
@@ -91,6 +102,7 @@ const nome = ref("");
 const cpf = ref("");
 const telefone = ref("");
 const email = ref("");
+const endereco = ref("");
 const open = ref(false);
 const erros = ref<{ [key: string]: string }>({});
 const { toast } = useToast();
@@ -100,6 +112,11 @@ const validarCampo = (campo: string) => {
   switch (campo) {
     case "nome":
       erros.value.nome = nome.value.trim() ? "" : "Nome é obrigatório";
+      break;
+    case "endereco":
+      erros.value.endereco = endereco.value.trim()
+        ? ""
+        : "Endereço é obrigatório";
       break;
     case "cpf":
       erros.value.cpf = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
@@ -124,6 +141,7 @@ const validarTodos = () => {
   validarCampo("cpf");
   validarCampo("telefone");
   validarCampo("email");
+  validarCampo("endereco");
 
   return Object.values(erros.value).every((erro) => erro === "");
 };
@@ -161,6 +179,7 @@ const createCliente = async () => {
     nome.value = "";
     cpf.value = "";
     telefone.value = "";
+    endereco.value = "";
     email.value = "";
     erros.value = {};
     open.value = false;

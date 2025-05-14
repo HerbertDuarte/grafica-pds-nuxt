@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
   const cliente = await prisma.cliente.create({
     data: {
       nome: body.nome,
+      endereco: body.endereco,
       cpf: body.cpf,
       telefone: body.telefone,
       email: body.email,
