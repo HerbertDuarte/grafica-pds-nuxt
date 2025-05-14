@@ -3,7 +3,6 @@ import type { Cliente } from "@prisma/client";
 import { useToast } from "@/components/ui/toast/use-toast";
 import {
   Table,
-  TableCaption,
   TableBody,
   TableCell,
   TableHead,
@@ -54,7 +53,6 @@ const refreshClientes = () => {
   refresh();
 };
 
-
 function formatarCPFExibicao(cpf: string) {
   if (!cpf) return "";
   cpf = cpf.replace(/\D/g, "");
@@ -92,7 +90,7 @@ watch(busca, () => {
       <div>
         <p>Tabela de clientes</p>
       </div>
-      <ClientesCreate @clienteCriado="refreshClientes" />
+      <ClientesCreate @cliente-criado="refreshClientes" />
     </div>
     <div class="flex items-center gap-2">
       <SearchInput
@@ -137,11 +135,11 @@ watch(busca, () => {
               <div class="flex items-center gap-2">
                 <ClientesUpdate
                   :cliente="cliente"
-                  @clienteAtualizado="refreshClientes"
+                  @cliente-atualizado="refreshClientes"
                 />
                 <ClientesDelete
                   :id="cliente.id"
-                  @clienteDeletado="refreshClientes"
+                  @cliente-deletado="refreshClientes"
                 />
               </div>
             </TableCell>

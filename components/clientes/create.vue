@@ -31,8 +31,8 @@
             id="endereco"
             v-model="endereco"
             class="col-span-3"
-            placeholder="Digite o nome do cliente"
-            @blur="validarCampo('nome')"
+            placeholder="Digite o endereço do cliente"
+            @blur="validarCampo('endereco')"
           />
         </div>
 
