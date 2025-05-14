@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/toast";
 
 const props = defineProps<{
-  cliente: Cliente
+  cliente: Cliente;
 }>();
 
 const open = ref(false);
@@ -14,13 +14,15 @@ const nome = ref(props.cliente.nome);
 const cpf = ref(props.cliente.cpf);
 const telefone = ref(props.cliente.telefone);
 const email = ref(props.cliente.email);
-const endereco = ref(props.cliente.endereco ?? ""); 
+const endereco = ref(props.cliente.endereco ?? "");
 const erros = ref<{ [key: string]: string }>({});
-const { toast } = useToast(); 
+const { toast } = useToast();
 const emit = defineEmits(["clienteAtualizado"]);
 
 const formatarCPF = (e: Event) => {
-  let value = (e.target as HTMLInputElement).value.replace(/\D/g, "").slice(0, 11);
+  let value = (e.target as HTMLInputElement).value
+    .replace(/\D/g, "")
+    .slice(0, 11);
   value = value.replace(/(\d{3})(\d)/, "$1.$2");
   value = value.replace(/(\d{3})(\d)/, "$1.$2");
   value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
@@ -28,7 +30,9 @@ const formatarCPF = (e: Event) => {
 };
 
 const formatarTelefone = (e: Event) => {
-  let value = (e.target as HTMLInputElement).value.replace(/\D/g, "").slice(0, 11);
+  let value = (e.target as HTMLInputElement).value
+    .replace(/\D/g, "")
+    .slice(0, 11);
   value = value.replace(/^(\d{2})(\d)/g, "($1) $2");
   value = value.replace(/(\d{5})(\d)/, "$1-$2");
   telefone.value = value;
@@ -97,14 +101,14 @@ const updateCliente = async () => {
         endereco: endereco.value,
       },
     });
-    
+
     toast({
       title: "Cliente editado!",
       description: "O cliente foi editado com sucesso.",
     });
 
     emit("clienteAtualizado");
-    
+
     open.value = false;
   } catch (error) {
     toast({
@@ -120,8 +124,11 @@ const updateCliente = async () => {
 <template>
   <Dialog v-model:open="open">
     <DialogTrigger as-child>
-      <Button variant="outline" class="transition-transform duration-200 hover:-translate-y-1"> 
-        <Pen /> 
+      <Button
+        variant="outline"
+        class="transition-transform duration-200 hover:-translate-y-1"
+      >
+        <Pen />
       </Button>
     </DialogTrigger>
     <DialogContent class="sm:max-w-[425px]">
@@ -148,7 +155,7 @@ const updateCliente = async () => {
             id="endereco"
             v-model="endereco"
             class="col-span-3"
-            placeholder="Digite o endereço do cliente"
+            placeholder="Av Principal, 10 - Bairro Novo."
             @blur="validarCampo('endereco')"
           />
         </div>
