@@ -31,7 +31,7 @@
             id="endereco"
             v-model="endereco"
             class="col-span-3"
-            placeholder="Digite o endereço do cliente"
+            placeholder="Av Principal, 10 - Bairro Novo."
             @blur="validarCampo('endereco')"
           />
         </div>

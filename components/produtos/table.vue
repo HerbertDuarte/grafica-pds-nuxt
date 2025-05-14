@@ -75,7 +75,7 @@ watch(busca, () => {
       <div>
         <p>Tabela de produtos</p>
       </div>
-      <ProdutosCreate @produtoCriado="refreshProdutos" />
+      <ProdutosCreate @produto-criado="refreshProdutos" />
     </div>
     <div class="flex items-center gap-2">
       <SearchInput
@@ -108,7 +108,12 @@ watch(busca, () => {
               {{ produto.id }}
             </TableCell>
             <TableCell>{{ produto.nome }}</TableCell>
-            <TableCell>{{ produto.preco }}</TableCell>
+            <TableCell>{{
+              new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+              }).format(produto.preco)
+            }}</TableCell>
             <TableCell>
               {{ produto.descricao }}
             </TableCell>
@@ -116,11 +121,11 @@ watch(busca, () => {
               <div class="flex items-center gap-2">
                 <ProdutosUpdate
                   :produto="produto"
-                  @produtoAtualizado="refreshProdutos"
+                  @produto-atualizado="refreshProdutos"
                 />
                 <ProdutosDelete
                   :id="produto.id"
-                  @produtoDeletado="refreshProdutos"
+                  @produto-deletado="refreshProdutos"
                 />
               </div>
             </TableCell>
