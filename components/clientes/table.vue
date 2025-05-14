@@ -3,7 +3,6 @@ import type { Cliente } from "@prisma/client";
 import { useToast } from "@/components/ui/toast/use-toast";
 import {
   Table,
-  TableCaption,
   TableBody,
   TableCell,
   TableHead,
@@ -54,7 +53,6 @@ const refreshClientes = () => {
   refresh();
 };
 
-
 function formatarCPFExibicao(cpf: string) {
   if (!cpf) return "";
   cpf = cpf.replace(/\D/g, "");
@@ -92,7 +90,7 @@ watch(busca, () => {
       <div>
         <p>Tabela de clientes</p>
       </div>
-      <ClientesCreate @clienteCriado="refreshClientes" />
+      <ClientesCreate @cliente-criado="refreshClientes" />
     </div>
     <div class="flex items-center gap-2">
       <SearchInput
@@ -104,8 +102,9 @@ watch(busca, () => {
     <Table>
       <TableHeader>
         <TableRow class="bg-slate-100 font-bold">
-          <TableHead class="font-bold"> ID </TableHead>
+          <TableHead class="font-bold">ID</TableHead>
           <TableHead class="font-bold">Nome</TableHead>
+          <TableHead class="font-bold">Endereço</TableHead>
           <TableHead class="font-bold">CPF</TableHead>
           <TableHead class="font-bold">Email</TableHead>
           <TableHead class="font-bold">Telefone</TableHead>
@@ -113,8 +112,8 @@ watch(busca, () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow v-if="status === 'pending'" colspan="6">
-          <TableCell colspan="6" class="text-center py-4">
+        <TableRow v-if="status === 'pending'" colspan="7">
+          <TableCell colspan="7" class="text-center py-4">
             <div class="flex justify-center items-center">
               <span class="text-slate-500">Carregando clientes...</span>
             </div>
@@ -126,6 +125,7 @@ watch(busca, () => {
               {{ cliente.id }}
             </TableCell>
             <TableCell>{{ cliente.nome }}</TableCell>
+            <TableCell>{{ cliente.endereco }}</TableCell>
             <TableCell>{{ formatarCPFExibicao(cliente.cpf) }}</TableCell>
             <TableCell>{{ cliente.email }}</TableCell>
             <TableCell>
@@ -135,18 +135,18 @@ watch(busca, () => {
               <div class="flex items-center gap-2">
                 <ClientesUpdate
                   :cliente="cliente"
-                  @clienteAtualizado="refreshClientes"
+                  @cliente-atualizado="refreshClientes"
                 />
                 <ClientesDelete
                   :id="cliente.id"
-                  @clienteDeletado="refreshClientes"
+                  @cliente-deletado="refreshClientes"
                 />
               </div>
             </TableCell>
           </TableRow>
         </template>
         <TableRow v-else>
-          <TableCell colspan="6" class="text-center py-4">
+          <TableCell colspan="7" class="text-center py-4">
             <div class="flex justify-center items-center">
               <span class="text-slate-500">Nenhum cliente encontrado</span>
             </div>

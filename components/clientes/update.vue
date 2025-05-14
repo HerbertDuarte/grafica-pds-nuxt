@@ -14,6 +14,7 @@ const nome = ref(props.cliente.nome);
 const cpf = ref(props.cliente.cpf);
 const telefone = ref(props.cliente.telefone);
 const email = ref(props.cliente.email);
+const endereco = ref(props.cliente.endereco ?? ""); 
 const erros = ref<{ [key: string]: string }>({});
 const { toast } = useToast(); 
 const emit = defineEmits(["clienteAtualizado"]);
@@ -41,6 +42,11 @@ const validarCampo = (campo: string) => {
     case "nome":
       erros.value.nome = nome.value.trim() ? "" : "Nome é obrigatório";
       break;
+    case "endereco":
+      erros.value.endereco = endereco.value.trim()
+        ? ""
+        : "Endereço é obrigatório";
+      break;
     case "cpf":
       erros.value.cpf = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
         ? ""
@@ -62,6 +68,7 @@ const validarCampo = (campo: string) => {
 const validarTodos = () => {
   validarCampo("nome");
   validarCampo("cpf");
+  validarCampo("endereco");
   validarCampo("telefone");
   validarCampo("email");
 
@@ -87,6 +94,7 @@ const updateCliente = async () => {
         cpf: limparNumero(cpf.value),
         telefone: limparNumero(telefone.value),
         email: email.value,
+        endereco: endereco.value,
       },
     });
     
@@ -132,6 +140,16 @@ const updateCliente = async () => {
             class="col-span-3"
             placeholder="Digite o nome do cliente"
             @blur="validarCampo('nome')"
+          />
+        </div>
+        <div class="grid grid-cols-4 items-center gap-4">
+          <Label for="endereco" class="text-right"> Endereço </Label>
+          <Input
+            id="endereco"
+            v-model="endereco"
+            class="col-span-3"
+            placeholder="Digite o endereço do cliente"
+            @blur="validarCampo('endereco')"
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
