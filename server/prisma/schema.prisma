@@ -48,6 +48,32 @@ model Pedido {
     cliente       Cliente         @relation(fields: [clienteId], references: [id])
     clienteId     Int
     pedidoProduto PedidoProduto[]
+    FichaProducao FichaProducao[]
+}
+
+model FichaProducao {
+    id           Int      @id @default(autoincrement())
+    descricao    String
+    createdAt    DateTime @default(now())
+    materiaPrima String[]
+    entrega      DateTime
+
+    pedido   Pedido @relation(fields: [pedidoId], references: [id])
+    pedidoId Int
+
+    tarefas         Tarefa @relation(fields: [fichaProducaoId], references: [id])
+    fichaProducaoId Int
+}
+
+model Tarefa {
+    id            Int      @id @default(autoincrement())
+    nome          String
+    createdAt     DateTime @default(now())
+    descricao      String
+    isObrigatorio Boolean
+    isSimultanea  Boolean
+
+    fichasProducao FichaProducao[]
 }
 
 model Cliente {
