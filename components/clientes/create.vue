@@ -103,24 +103,57 @@ const error = ref<string>();
 const { toast } = useToast();
 const emit = defineEmits(["clienteCriado"]);
 
-
-function validaNome(){
-  if(nome.value.trim().length < 3){
-    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres."
-    return false
+// Validações individuais
+function validaNome() {
+  if (nome.value.trim().length < 3) {
+    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
+    return false;
   }
-  return true
+  return true;
 }
 
-const validarTodos = () => {
-  if(!validaNome())return false
-  return true
-};
+function validaEndereco() {
+  if (endereco.value.trim().length < 5) {
+    error.value = "Endereço muito curto. O endereço precisa ter no mínimo 5 caracteres.";
+    return false;
+  }
+  return true;
+}
+
+function validaCPF() {
+  if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)) {
+    error.value = "CPF inválido. Use o formato 000.000.000-00.";
+    return false;
+  }
+  return true;
+}
+
+function validaTelefone() {
+  if (!/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value)) {
+    error.value = "Telefone inválido. Use o formato (00) 00000-0000.";
+    return false;
+  }
+  return true;
+}
+
+function validaEmail() {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    error.value = "E-mail inválido.";
+    return false;
+  }
+  return true;
+}
 
 const limparNumero = (valor: string) => valor.replace(/\D/g, "");
 
 const createCliente = async () => {
-  if (!validarTodos()) {
+  if (
+    !validaNome() ||
+    !validaEndereco() ||
+    !validaCPF() ||
+    !validaTelefone() ||
+    !validaEmail()
+  ) {
     toast({
       title: "Erro no formulário",
       description: error.value,

@@ -12,6 +12,7 @@ const tabs = [
   { title: "Módulo de clientes", path: "/clientes" },
   { title: "Módulo de produtos", path: "/produtos" },
   { title: "Módulo de produção", path: "/producao" },
+  { title: "Módulo de tarefas", path: "/tarefas" },
 ];
 </script>
 <template>
