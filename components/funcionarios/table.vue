@@ -18,7 +18,7 @@ const {
   error,
   status,
   refresh,
-} = useLazyFetch<Funcionario[]>("/api/funcionario/get-all");
+} = useLazyFetch<Funcionario[]>("/api/funcionarios/get-all");
 
 const busca = ref("");
 const realizarBusca = () => {
@@ -113,9 +113,7 @@ watch(busca, () => {
             <TableCell>{{ funcionario.cpf }}</TableCell>
             <TableCell>{{ funcionario.telefone }}</TableCell>
             <TableCell>{{ funcionario.email }}</TableCell>
-            <TableCell>
-             <!--  {{ funcionario.cargo?.titulo || "—" }} --> <!-- IMPLEMENTAR CARGO -->
-            </TableCell>
+            <TableCell>{{ funcionario.cargo || "—" }}</TableCell>
             <TableCell class="flex items-end justify-end w-[200px]">
               <div class="flex items-center gap-2">
                 <FuncionariosUpdate

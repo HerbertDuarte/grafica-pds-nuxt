@@ -23,10 +23,12 @@
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cpf" class="text-right"> CPF </Label>
           <Input
+            v-mask="'###.###.###-##'"
             id="cpf"
             v-model="cpf"
             class="col-span-3"
             placeholder="Digite o CPF"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
@@ -34,8 +36,10 @@
           <Input
             id="telefone"
             v-model="telefone"
+            v-mask="['(##) ####-####', '(##) #####-####']"
             class="col-span-3"
             placeholder="Digite o telefone"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
@@ -46,6 +50,7 @@
             v-model="email"
             class="col-span-3"
             placeholder="Digite o email"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
@@ -56,20 +61,30 @@
             v-model="senha"
             class="col-span-3"
             placeholder="Digite a senha"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cargo" class="text-right"> Cargo </Label>
-          <select id="cargo" v-model="cargoId" class="col-span-3 rounded border px-2 py-1">
+          <select
+            id="cargo"
+            v-model="cargo"
+            class="col-span-3 rounded border px-2 py-1"
+            required
+          >
             <option disabled value="">Selecione o cargo</option>
-            <option v-for="cargo in cargos" :key="cargo.id" :value="cargo.id">
-              {{ cargo.nome }}
-            </option>
+            <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+            <option value="VENDEDOR">VENDEDOR</option>
+            <option value="SERRALHEIRO">SERRALHEIRO</option>
+            <option value="MONTADOR">MONTADOR</option>
+            <option value="ENTREGADOR">ENTREGADOR</option>
           </select>
         </div>
       </div>
       <DialogFooter>
-        <Button type="submit" @click="createFuncionario"> Criar Funcionário </Button>
+        <Button type="submit" @click="createFuncionario">
+          Criar Funcionário
+        </Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
@@ -89,40 +104,19 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 
-interface Cargo {
-  id: number;
-  nome: string;
-}
-
 const nome = ref("");
 const cpf = ref("");
 const telefone = ref("");
 const email = ref("");
 const senha = ref("");
-const cargoId = ref<number | "">("");
+const cargo = ref<string | "">("");
 
-const cargos = ref<Cargo[]>([]);
 const open = ref(false);
 const { toast } = useToast();
 const emit = defineEmits(["funcionarioCriado"]);
 
-// Simular busca dos cargos (pode trocar para fetch real)
-onMounted(async () => {
-  // Exemplo: buscar cargos via API
-  try {
-    const res = await $fetch<Cargo[]>("/api/cargos"); 
-    cargos.value = res;
-  } catch (error) {
-    toast({
-      title: "Erro ao carregar cargos",
-      description: "Não foi possível carregar a lista de cargos.",
-      variant: "destructive",
-    });
-  }
-});
-
 const createFuncionario = async () => {
-  if (!cargoId.value) {
+  if (!cargo.value) {
     toast({
       title: "Erro",
       description: "Por favor, selecione um cargo.",
@@ -132,7 +126,7 @@ const createFuncionario = async () => {
   }
 
   try {
-    await useFetch("/api/funcionario/post-create", {
+    await useFetch("/api/funcionarios/create", {
       method: "POST",
       body: {
         nome: nome.value,
@@ -140,7 +134,7 @@ const createFuncionario = async () => {
         telefone: telefone.value,
         email: email.value,
         senha: senha.value,
-        cargoId: cargoId.value,
+        cargo: cargo.value,
       },
     });
 
@@ -156,7 +150,7 @@ const createFuncionario = async () => {
     telefone.value = "";
     email.value = "";
     senha.value = "";
-    cargoId.value = "";
+    cargo.value = "";
 
     open.value = false;
   } catch (error) {

@@ -16,8 +16,7 @@ model Funcionario {
     senha     String
     createdAt DateTime @default(now())
 
-    cargo   Cargo @relation(fields: [cargoId], references: [id])
-    cargoId Int
+    cargo String
 }
 
 model Produto {
@@ -69,7 +68,7 @@ model Tarefa {
     id            Int      @id @default(autoincrement())
     nome          String
     createdAt     DateTime @default(now())
-    descricao      String
+    descricao     String
     isObrigatorio Boolean
     isSimultanea  Boolean
 
@@ -87,8 +86,3 @@ model Cliente {
     pedidos   Pedido[]
 }
 
-model Cargo {
-    id           Int           @id @default(autoincrement())
-    titulo       String
-    funcionarios Funcionario[]
-}

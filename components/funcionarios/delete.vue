@@ -54,7 +54,7 @@ const emit = defineEmits(["funcionarioDeletado"]);
 
 const deleteFuncionario = async () => {
   try {
-    const response = await $fetch(`/api/funcionario/delete/${id.value}`, {
+    const response = await $fetch(`/api/funcionarios/delete/${id.value}`, {
       method: "DELETE",
     });
 

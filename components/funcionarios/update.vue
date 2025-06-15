@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { useToast } from "../ui/toast";
 
 const props = defineProps<{
-  funcionario: Funcionario
+  funcionario: Funcionario;
   // cargos?: { id: number; titulo: string }[] // opcional para dropdown cargo
 }>();
 
@@ -15,14 +15,14 @@ const nome = ref(props.funcionario.nome);
 const cpf = ref(props.funcionario.cpf);
 const telefone = ref(props.funcionario.telefone);
 const email = ref(props.funcionario.email);
-const cargoId = ref(props.funcionario.cargoId);
+const cargo = ref(props.funcionario.cargo);
 
 const { toast } = useToast();
 const emit = defineEmits(["funcionarioAtualizado"]);
 
 const updateFuncionario = async () => {
   try {
-    const response = await $fetch("/api/funcionario/put-update", {
+    const response = await $fetch("/api/funcionarios/update", {
       method: "put",
       body: {
         id: id.value,
@@ -30,7 +30,7 @@ const updateFuncionario = async () => {
         cpf: cpf.value,
         telefone: telefone.value,
         email: email.value,
-        cargoId: cargoId.value,
+        cargo: cargo.value,
       },
     });
 
@@ -56,7 +56,10 @@ const updateFuncionario = async () => {
 <template>
   <Dialog v-model:open="open">
     <DialogTrigger as-child>
-      <Button variant="outline" class="transition-transform duration-200 hover:-translate-y-1">
+      <Button
+        variant="outline"
+        class="transition-transform duration-200 hover:-translate-y-1"
+      >
         <Pen />
       </Button>
     </DialogTrigger>
@@ -75,24 +78,29 @@ const updateFuncionario = async () => {
             v-model="nome"
             class="col-span-3"
             placeholder="Digite o nome do funcionário"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cpf" class="text-right"> CPF </Label>
           <Input
             id="cpf"
+            v-mask="'###.###.###-##'"
             v-model="cpf"
             class="col-span-3"
             placeholder="Digite o CPF"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="telefone" class="text-right"> Telefone </Label>
           <Input
+            v-mask="['(##) ####-####', '(##) #####-####']"
             id="telefone"
             v-model="telefone"
             class="col-span-3"
             placeholder="Digite o telefone"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
@@ -103,32 +111,30 @@ const updateFuncionario = async () => {
             v-model="email"
             class="col-span-3"
             placeholder="Digite o email"
+            required
           />
         </div>
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="cargo" class="text-right"> Cargo </Label>
           <select
             id="cargo"
-            v-model="cargoId"
+            v-model="cargo"
             class="col-span-3 rounded border border-gray-300 p-2"
+            required
           >
-            <!--
             <option disabled value="">Selecione o cargo</option>
-            <option
-              v-for="cargo in cargos"
-              :key="cargo.id"
-              :value="cargo.id"
-            >
-              {{ cargo.titulo }}
-            </option>
-            -->
-            <!-- Se não tiver lista de cargos, pode deixar um input de número ou texto simples -->
-            <option :value="cargoId">{{ cargoId }}</option>
+            <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+            <option value="VENDEDOR">VENDEDOR</option>
+            <option value="SERRALHEIRO">SERRALHEIRO</option>
+            <option value="MONTADOR">MONTADOR</option>
+            <option value="ENTREGADOR">ENTREGADOR</option>
           </select>
         </div>
       </div>
       <DialogFooter>
-        <Button type="submit" @click="updateFuncionario"> Editar Funcionário </Button>
+        <Button type="submit" @click="updateFuncionario">
+          Editar Funcionário
+        </Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>
