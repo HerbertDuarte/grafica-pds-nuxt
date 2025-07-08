@@ -15,13 +15,11 @@ type FichaProducaoCompleta = FichaProducao & {
   funcionario: {
     nome: string;
   };
-  tarefas: Array<{
-    tarefa: {
-      id: number;
-      nome: string;
-      isObrigatorio: boolean;
-    };
-  }>;
+  tarefa: {
+    id: number;
+    nome: string;
+    isObrigatorio: boolean;
+  };
   produtos: Array<{
     produto: {
       id: number;
@@ -44,8 +42,8 @@ const funcionarioId = ref(props.fichaProducao.funcionarioId.toString());
 const entrega = ref(
   new Date(props.fichaProducao.entrega).toISOString().slice(0, 16)
 );
-const tarefasSelecionadas = ref<number[]>(
-  props.fichaProducao.tarefas.map((t) => t.tarefa.id)
+const tarefaSelecionada = ref<number | string>(
+  props.fichaProducao.tarefa ? props.fichaProducao.tarefa.id : ""
 );
 const produtosSelecionados = ref<Array<{ id: number; quantidade: number }>>(
   props.fichaProducao.produtos.map((p) => ({
@@ -126,6 +124,14 @@ function validaEntrega() {
   return true;
 }
 
+function validaTarefa() {
+  if (!tarefaSelecionada.value) {
+    error.value = "Selecione uma tarefa.";
+    return false;
+  }
+  return true;
+}
+
 function validaProdutos() {
   if (produtosSelecionados.value.length === 0) {
     error.value = "Selecione pelo menos um produto.";
@@ -140,6 +146,7 @@ const updateFichaProducao = async () => {
     !validaPedido() ||
     !validaFuncionario() ||
     !validaEntrega() ||
+    !validaTarefa() ||
     !validaProdutos()
   ) {
     toast({
@@ -159,7 +166,7 @@ const updateFichaProducao = async () => {
         pedidoId: parseInt(pedidoId.value),
         funcionarioId: parseInt(funcionarioId.value),
         entrega: entrega.value,
-        tarefaIds: tarefasSelecionadas.value,
+        tarefaIds: [parseInt(tarefaSelecionada.value.toString())],
         produtos: produtosSelecionados.value,
       },
     });
@@ -338,32 +345,24 @@ const decrementarQuantidade = (produtoId: number) => {
           />
         </div>
 
-        <!-- TAREFAS -->
+        <!-- TAREFA -->
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="tarefas" class="text-right">Tarefas</Label>
-          <div class="col-span-3">
-            <div class="max-h-32 overflow-y-auto border rounded-md p-2">
-              <div
-                v-for="tarefa in tarefas"
-                :key="tarefa.id"
-                class="flex items-center space-x-2 mb-2"
-              >
-                <input
-                  :id="`tarefa-${tarefa.id}`"
-                  v-model="tarefasSelecionadas"
-                  :value="tarefa.id"
-                  type="checkbox"
-                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label :for="`tarefa-${tarefa.id}`" class="text-sm">
-                  {{ tarefa.nome }}
-                  <span v-if="tarefa.isObrigatorio" class="text-red-500"
-                    >*</span
-                  >
-                </label>
-              </div>
-            </div>
-          </div>
+          <Label for="tarefa" class="text-right">Tarefa *</Label>
+          <select
+            id="tarefa"
+            v-model="tarefaSelecionada"
+            class="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Selecione uma tarefa</option>
+            <option
+              v-for="tarefa in tarefas"
+              :key="tarefa.id"
+              :value="tarefa.id"
+            >
+              {{ tarefa.nome }}
+              <span v-if="tarefa.isObrigatorio"> *</span>
+            </option>
+          </select>
         </div>
       </div>
       <DialogFooter>

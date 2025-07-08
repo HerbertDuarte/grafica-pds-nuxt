@@ -14,11 +14,7 @@ export default defineEventHandler(async (event) => {
         },
       },
       funcionario: true,
-      tarefas: {
-        include: {
-          tarefa: true,
-        },
-      },
+      tarefa: true,
       produtos: {
         include: {
           produto: true,

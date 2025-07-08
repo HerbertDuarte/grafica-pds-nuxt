@@ -129,32 +129,24 @@
           />
         </div>
 
-        <!-- TAREFAS -->
+        <!-- TAREFA -->
         <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="tarefas" class="text-right">Tarefas</Label>
-          <div class="col-span-3">
-            <div class="max-h-32 overflow-y-auto border rounded-md p-2">
-              <div
-                v-for="tarefa in tarefas"
-                :key="tarefa.id"
-                class="flex items-center space-x-2 mb-2"
-              >
-                <input
-                  :id="`tarefa-${tarefa.id}`"
-                  v-model="tarefasSelecionadas"
-                  :value="tarefa.id"
-                  type="checkbox"
-                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label :for="`tarefa-${tarefa.id}`" class="text-sm">
-                  {{ tarefa.nome }}
-                  <span v-if="tarefa.isObrigatorio" class="text-red-500"
-                    >*</span
-                  >
-                </label>
-              </div>
-            </div>
-          </div>
+          <Label for="tarefa" class="text-right">Tarefa *</Label>
+          <select
+            id="tarefa"
+            v-model="tarefaSelecionada"
+            class="col-span-3 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="">Selecione uma tarefa</option>
+            <option
+              v-for="tarefa in tarefas"
+              :key="tarefa.id"
+              :value="tarefa.id"
+            >
+              {{ tarefa.nome }}
+              <span v-if="tarefa.isObrigatorio"> *</span>
+            </option>
+          </select>
         </div>
       </div>
 
@@ -185,7 +177,7 @@ const descricao = ref("");
 const pedidoId = ref("");
 const funcionarioId = ref("");
 const entrega = ref("");
-const tarefasSelecionadas = ref<number[]>([]);
+const tarefaSelecionada = ref<number | string>("");
 const produtosSelecionados = ref<Array<{ id: number; quantidade: number }>>([]);
 const open = ref(false);
 const error = ref<string>();
@@ -288,6 +280,14 @@ function validaEntrega() {
   return true;
 }
 
+function validaTarefa() {
+  if (!tarefaSelecionada.value) {
+    error.value = "Selecione uma tarefa.";
+    return false;
+  }
+  return true;
+}
+
 function validaProdutos() {
   if (produtosSelecionados.value.length === 0) {
     error.value = "Selecione pelo menos um produto.";
@@ -302,6 +302,7 @@ const createFichaProducao = async () => {
     !validaPedido() ||
     !validaFuncionario() ||
     !validaEntrega() ||
+    !validaTarefa() ||
     !validaProdutos()
   ) {
     toast({
@@ -320,7 +321,7 @@ const createFichaProducao = async () => {
         pedidoId: parseInt(pedidoId.value),
         funcionarioId: parseInt(funcionarioId.value),
         entrega: entrega.value,
-        tarefaIds: tarefasSelecionadas.value,
+        tarefaIds: [parseInt(tarefaSelecionada.value)],
         produtos: produtosSelecionados.value,
       },
     });
@@ -337,7 +338,7 @@ const createFichaProducao = async () => {
     pedidoId.value = "";
     funcionarioId.value = "";
     entrega.value = "";
-    tarefasSelecionadas.value = [];
+    tarefaSelecionada.value = "";
     produtosSelecionados.value = [];
     error.value = undefined;
     open.value = false;

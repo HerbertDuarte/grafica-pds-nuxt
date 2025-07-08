@@ -49,6 +49,22 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  // Verificar se a tarefa existe (se foi alterada)
+  if (body.tarefaIds && body.tarefaIds.length > 0) {
+    const tarefaExistente = await prisma.tarefa.findUnique({
+      where: {
+        id: body.tarefaIds[0], // Pegar apenas a primeira tarefa
+      },
+    });
+
+    if (!tarefaExistente) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Tarefa não encontrada",
+      });
+    }
+  }
+
   const fichaProducao = await prisma.fichaProducao.update({
     where: {
       id: body.id,
@@ -58,28 +74,12 @@ export default defineEventHandler(async (event) => {
       entrega: body.entrega ? new Date(body.entrega) : undefined,
       pedidoId: body.pedidoId,
       funcionarioId: body.funcionarioId,
+      tarefaId:
+        body.tarefaIds && body.tarefaIds.length > 0
+          ? body.tarefaIds[0]
+          : undefined,
     },
   });
-
-  // Atualizar tarefas se fornecidas
-  if (body.tarefaIds !== undefined) {
-    // Remover tarefas existentes
-    await prisma.fichaProducaoTarefa.deleteMany({
-      where: {
-        fichaProducaoId: body.id,
-      },
-    });
-
-    // Adicionar novas tarefas
-    if (body.tarefaIds.length > 0) {
-      await prisma.fichaProducaoTarefa.createMany({
-        data: body.tarefaIds.map((tarefaId: number) => ({
-          fichaProducaoId: body.id,
-          tarefaId: tarefaId,
-        })),
-      });
-    }
-  }
 
   // Atualizar produtos se fornecidas
   if (body.produtos !== undefined) {

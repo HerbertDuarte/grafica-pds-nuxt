@@ -31,25 +31,35 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  // Verificar se a tarefa existe
+  if (body.tarefaIds && body.tarefaIds.length > 0) {
+    const tarefaExistente = await prisma.tarefa.findUnique({
+      where: {
+        id: body.tarefaIds[0], // Pegar apenas a primeira tarefa
+      },
+    });
+
+    if (!tarefaExistente) {
+      throw createError({
+        statusCode: 404,
+        statusMessage: "Tarefa não encontrada",
+      });
+    }
+  }
+
   const fichaProducao = await prisma.fichaProducao.create({
     data: {
       descricao: body.descricao,
       entrega: new Date(body.entrega),
       pedidoId: body.pedidoId,
       funcionarioId: body.funcionarioId,
+      tarefaId:
+        body.tarefaIds && body.tarefaIds.length > 0
+          ? body.tarefaIds[0]
+          : undefined,
       createdAt: new Date(),
     },
   });
-
-  // Criar relações com tarefas se fornecidas
-  if (body.tarefaIds && body.tarefaIds.length > 0) {
-    await prisma.fichaProducaoTarefa.createMany({
-      data: body.tarefaIds.map((tarefaId: number) => ({
-        fichaProducaoId: fichaProducao.id,
-        tarefaId: tarefaId,
-      })),
-    });
-  }
 
   // Criar relações com produtos se fornecidas
   if (body.produtos && body.produtos.length > 0) {
