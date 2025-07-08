@@ -16,7 +16,8 @@ model Funcionario {
     senha     String
     createdAt DateTime @default(now())
 
-    cargo String
+    cargo         String
+    FichaProducao FichaProducao[]
 }
 
 model Produto {
@@ -25,7 +26,8 @@ model Produto {
     nome      String
     descricao String
 
-    pedidoProduto PedidoProduto[]
+    pedidoProduto        PedidoProduto[]
+    FichaProducaoProduto FichaProducaoProduto[]
 }
 
 model PedidoProduto {
@@ -51,17 +53,20 @@ model Pedido {
 }
 
 model FichaProducao {
-    id           Int      @id @default(autoincrement())
-    descricao    String
-    createdAt    DateTime @default(now())
-    materiaPrima String[]
-    entrega      DateTime
+    id        Int      @id @default(autoincrement())
+    descricao String
+    createdAt DateTime @default(now())
+
+    entrega DateTime
 
     pedido   Pedido @relation(fields: [pedidoId], references: [id])
     pedidoId Int
 
-    tarefas         Tarefa @relation(fields: [fichaProducaoId], references: [id])
-    fichaProducaoId Int
+    funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
+    funcionarioId Int
+
+    tarefas  FichaProducaoTarefa[]
+    produtos FichaProducaoProduto[]
 }
 
 model Tarefa {
@@ -72,7 +77,28 @@ model Tarefa {
     isObrigatorio Boolean
     isSimultanea  Boolean
 
-    fichasProducao FichaProducao[]
+    fichasProducao FichaProducaoTarefa[]
+}
+
+model FichaProducaoTarefa {
+    id              Int           @id @default(autoincrement())
+    fichaProducao   FichaProducao @relation(fields: [fichaProducaoId], references: [id])
+    fichaProducaoId Int
+    tarefa          Tarefa        @relation(fields: [tarefaId], references: [id])
+    tarefaId        Int
+
+    @@unique([fichaProducaoId, tarefaId])
+}
+
+model FichaProducaoProduto {
+    id              Int           @id @default(autoincrement())
+    fichaProducao   FichaProducao @relation(fields: [fichaProducaoId], references: [id])
+    fichaProducaoId Int
+    produto         Produto       @relation(fields: [produtoId], references: [id])
+    produtoId       Int
+    quantidade      Int           @default(1)
+
+    @@unique([fichaProducaoId, produtoId])
 }
 
 model Cliente {
@@ -85,4 +111,3 @@ model Cliente {
     createdAt DateTime @default(now())
     pedidos   Pedido[]
 }
-
