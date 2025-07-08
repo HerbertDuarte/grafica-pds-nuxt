@@ -1,6 +1,8 @@
 <script setup lang="ts"></script>
 <template>
   <CustomContainer title="Funcionários">
-    <p>tabela funcionários</p>
+    <div class="my-8 p-8 border rounded-xl space-y-4">
+        <FuncionariosTable />
+      </div>
   </CustomContainer>
 </template>
