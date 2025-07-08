@@ -93,11 +93,13 @@ export default defineEventHandler(async (event) => {
     // Adicionar novos produtos
     if (body.produtos.length > 0) {
       await prisma.fichaProducaoProduto.createMany({
-        data: body.produtos.map((produto: { id: number; quantidade: number }) => ({
-          fichaProducaoId: body.id,
-          produtoId: produto.id,
-          quantidade: produto.quantidade,
-        })),
+        data: body.produtos.map(
+          (produto: { id: number; quantidade: number }) => ({
+            fichaProducaoId: body.id,
+            produtoId: produto.id,
+            quantidade: produto.quantidade,
+          })
+        ),
       });
     }
   }

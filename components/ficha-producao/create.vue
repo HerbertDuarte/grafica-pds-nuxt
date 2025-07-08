@@ -75,7 +75,13 @@
               >
                 <div class="flex items-center space-x-2">
                   <label :for="`produto-${produto.id}`" class="text-sm">
-                    {{ produto.nome }} - {{ new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(produto.preco) }}
+                    {{ produto.nome }} -
+                    {{
+                      new Intl.NumberFormat("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      }).format(produto.preco)
+                    }}
                   </label>
                 </div>
                 <div class="flex items-center space-x-2">
@@ -91,7 +97,10 @@
                       -
                     </Button>
                     <span class="w-8 text-center text-sm">
-                      {{ produtosSelecionados.find(p => p.id === produto.id)?.quantidade || 0 }}
+                      {{
+                        produtosSelecionados.find((p) => p.id === produto.id)
+                          ?.quantidade || 0
+                      }}
                     </span>
                     <Button
                       type="button"
@@ -136,7 +145,7 @@
                   :value="tarefa.id"
                   type="checkbox"
                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                >
+                />
                 <label :for="`tarefa-${tarefa.id}`" class="text-sm">
                   {{ tarefa.nome }}
                   <span v-if="tarefa.isObrigatorio" class="text-red-500"
@@ -190,9 +199,7 @@ const funcionarios = ref<Array<{ id: number; nome: string; cargo: string }>>(
 const tarefas = ref<
   Array<{ id: number; nome: string; isObrigatorio: boolean }>
 >([]);
-const produtos = ref<Array<{ id: number; nome: string; preco: number }>>(
-  []
-);
+const produtos = ref<Array<{ id: number; nome: string; preco: number }>>([]);
 
 const { toast } = useToast();
 const emit = defineEmits(["fichaProducaoCriada"]);
@@ -203,12 +210,13 @@ onMounted(async () => {
 
 const carregarDados = async () => {
   try {
-    const [pedidosData, funcionariosData, tarefasData, produtosData] = await Promise.all([
-      $fetch("/api/pedidos/get-all"),
-      $fetch("/api/funcionarios/get-all"),
-      $fetch("/api/tarefa/get-all"),
-      $fetch("/api/produto/get-all"),
-    ]);
+    const [pedidosData, funcionariosData, tarefasData, produtosData] =
+      await Promise.all([
+        $fetch("/api/pedidos/get-all"),
+        $fetch("/api/funcionarios/get-all"),
+        $fetch("/api/tarefa/get-all"),
+        $fetch("/api/produto/get-all"),
+      ]);
 
     pedidos.value = pedidosData;
     funcionarios.value = funcionariosData;
@@ -226,7 +234,7 @@ const carregarDados = async () => {
 
 // Funções para gerenciar produtos
 const incrementarQuantidade = (produtoId: number) => {
-  const produto = produtosSelecionados.value.find(p => p.id === produtoId);
+  const produto = produtosSelecionados.value.find((p) => p.id === produtoId);
   if (produto) {
     produto.quantidade++;
   } else {
@@ -235,7 +243,7 @@ const incrementarQuantidade = (produtoId: number) => {
 };
 
 const decrementarQuantidade = (produtoId: number) => {
-  const index = produtosSelecionados.value.findIndex(p => p.id === produtoId);
+  const index = produtosSelecionados.value.findIndex((p) => p.id === produtoId);
   if (index !== -1) {
     const produto = produtosSelecionados.value[index];
     if (produto.quantidade > 1) {

@@ -150,7 +150,10 @@ watch(busca, () => {
             <TableCell>{{ ficha.funcionario?.nome }}</TableCell>
             <TableCell>
               <div class="max-w-[200px]">
-                <div v-if="ficha.produtos && ficha.produtos.length > 0" class="flex flex-wrap gap-1">
+                <div
+                  v-if="ficha.produtos && ficha.produtos.length > 0"
+                  class="flex flex-wrap gap-1"
+                >
                   <span
                     v-for="(produtoRel, index) in ficha.produtos"
                     :key="index"
@@ -159,7 +162,9 @@ watch(busca, () => {
                     {{ produtoRel.produto.nome }} ({{ produtoRel.quantidade }}x)
                   </span>
                 </div>
-                <span v-else class="text-slate-400 text-sm">Nenhum produto</span>
+                <span v-else class="text-slate-400 text-sm"
+                  >Nenhum produto</span
+                >
               </div>
             </TableCell>
             <TableCell>{{ formatarDataHora(ficha.entrega) }}</TableCell>

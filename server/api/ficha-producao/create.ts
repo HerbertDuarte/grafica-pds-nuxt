@@ -54,11 +54,13 @@ export default defineEventHandler(async (event) => {
   // Criar relações com produtos se fornecidas
   if (body.produtos && body.produtos.length > 0) {
     await prisma.fichaProducaoProduto.createMany({
-      data: body.produtos.map((produto: { id: number; quantidade: number }) => ({
-        fichaProducaoId: fichaProducao.id,
-        produtoId: produto.id,
-        quantidade: produto.quantidade,
-      })),
+      data: body.produtos.map(
+        (produto: { id: number; quantidade: number }) => ({
+          fichaProducaoId: fichaProducao.id,
+          produtoId: produto.id,
+          quantidade: produto.quantidade,
+        })
+      ),
     });
   }
 
