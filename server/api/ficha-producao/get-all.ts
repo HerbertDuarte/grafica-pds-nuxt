@@ -9,11 +9,7 @@ export default defineEventHandler(async () => {
         },
       },
       funcionario: true,
-      tarefas: {
-        include: {
-          tarefa: true,
-        },
-      },
+      tarefa: true,
       produtos: {
         include: {
           produto: true,

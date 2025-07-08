@@ -65,7 +65,9 @@ model FichaProducao {
     funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
     funcionarioId Int
 
-    tarefas  FichaProducaoTarefa[]
+    tarefa   Tarefa @relation(fields: [tarefaId], references: [id])
+    tarefaId Int
+
     produtos FichaProducaoProduto[]
 }
 
@@ -77,17 +79,7 @@ model Tarefa {
     isObrigatorio Boolean
     isSimultanea  Boolean
 
-    fichasProducao FichaProducaoTarefa[]
-}
-
-model FichaProducaoTarefa {
-    id              Int           @id @default(autoincrement())
-    fichaProducao   FichaProducao @relation(fields: [fichaProducaoId], references: [id])
-    fichaProducaoId Int
-    tarefa          Tarefa        @relation(fields: [tarefaId], references: [id])
-    tarefaId        Int
-
-    @@unique([fichaProducaoId, tarefaId])
+    fichasProducao FichaProducao[]
 }
 
 model FichaProducaoProduto {

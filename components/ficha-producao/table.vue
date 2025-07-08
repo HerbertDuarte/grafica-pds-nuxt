@@ -22,6 +22,11 @@ type FichaProducaoCompleta = FichaProducao & {
   funcionario: {
     nome: string;
   };
+  tarefa: {
+    id: number;
+    nome: string;
+    isObrigatorio: boolean;
+  };
   produtos: Array<{
     produto: {
       nome: string;
@@ -56,7 +61,7 @@ const fichasProducaoFiltradas = computed(() => {
       ficha.id.toString().includes(termoBusca) ||
       ficha.pedido?.descricao.toLowerCase().includes(termoBusca) ||
       ficha.funcionario?.nome.toLowerCase().includes(termoBusca) ||
-      ficha.pedido?.cliente?.nome.toLowerCase().includes(termoBusca)
+      ficha.tarefa?.nome.toLowerCase().includes(termoBusca)
   );
 });
 
@@ -119,7 +124,7 @@ watch(busca, () => {
           <TableHead class="font-bold">ID</TableHead>
           <TableHead class="font-bold">Descrição</TableHead>
           <TableHead class="font-bold">Pedido</TableHead>
-          <TableHead class="font-bold">Cliente</TableHead>
+          <TableHead class="font-bold">Tarefa</TableHead>
           <TableHead class="font-bold">Funcionário</TableHead>
           <TableHead class="font-bold">Produtos</TableHead>
           <TableHead class="font-bold">Entrega</TableHead>
@@ -146,7 +151,7 @@ watch(busca, () => {
             <TableCell>
               #{{ ficha.pedido?.id }} - {{ ficha.pedido?.descricao }}
             </TableCell>
-            <TableCell>{{ ficha.pedido?.cliente?.nome }}</TableCell>
+            <TableCell>{{ ficha.tarefa?.nome || "Sem tarefa" }}</TableCell>
             <TableCell>{{ ficha.funcionario?.nome }}</TableCell>
             <TableCell>
               <div class="max-w-[200px]">
