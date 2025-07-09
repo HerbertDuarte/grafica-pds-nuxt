@@ -22,7 +22,8 @@ const emit = defineEmits(["clienteAtualizado"]);
 // Validações individuais (igual ao create)
 function validaNome() {
   if (nome.value.trim().length < 3) {
-    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
+    error.value =
+      "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
     return false;
   }
   return true;
@@ -30,7 +31,8 @@ function validaNome() {
 
 function validaEndereco() {
   if (endereco.value.trim().length < 5) {
-    error.value = "Endereço muito curto. O endereço precisa ter no mínimo 5 caracteres.";
+    error.value =
+      "Endereço muito curto. O endereço precisa ter no mínimo 5 caracteres.";
     return false;
   }
   return true;
@@ -63,20 +65,20 @@ function validaEmail() {
 const limparNumero = (valor: string) => valor.replace(/\D/g, "");
 
 const updateCliente = async () => {
-  if (
-    !validaNome() ||
-    !validaEndereco() ||
-    !validaCPF() ||
-    !validaTelefone() ||
-    !validaEmail()
-  ) {
-    toast({
-      title: "Erro no formulário",
-      description: error.value,
-      variant: "destructive",
-    });
-    return;
-  }
+  // if (
+  //   !validaNome() ||
+  //   !validaEndereco() ||
+  //   !validaCPF() ||
+  //   !validaTelefone() ||
+  //   !validaEmail()
+  // ) {
+  //   toast({
+  //     title: "Erro no formulário",
+  //     description: error.value,
+  //     variant: "destructive",
+  //   });
+  //   return;
+  // }
 
   try {
     await $fetch("/api/clientes/update", {
