@@ -57,7 +57,7 @@ model FichaProducao {
     descricao String
     createdAt DateTime @default(now())
 
-    entrega DateTime
+    entrega DateTime @db.Timestamp(3)
 
     pedido   Pedido @relation(fields: [pedidoId], references: [id])
     pedidoId Int

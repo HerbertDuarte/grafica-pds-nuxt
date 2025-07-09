@@ -39,9 +39,13 @@ const id = ref(props.fichaProducao.id);
 const descricao = ref(props.fichaProducao.descricao);
 const pedidoId = ref(props.fichaProducao.pedidoId.toString());
 const funcionarioId = ref(props.fichaProducao.funcionarioId.toString());
-const entrega = ref(
-  new Date(props.fichaProducao.entrega).toISOString().slice(0, 16)
-);
+const entrega = ref(getDate());
+
+function getDate() {
+  const data = new Date(props.fichaProducao.entrega);
+  data.setHours(data.getHours() - 3);
+  return data.toISOString().slice(0, 16);
+}
 const tarefaSelecionada = ref<number | string>(
   props.fichaProducao.tarefa ? props.fichaProducao.tarefa.id : ""
 );

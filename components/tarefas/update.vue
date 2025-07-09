@@ -17,14 +17,16 @@ const emit = defineEmits(["tarefaAtualizada"]);
 
 function validaNome() {
   if (nome.value.trim().length < 3) {
-    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
+    error.value =
+      "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
     return false;
   }
   return true;
 }
 function validaDescricao() {
   if (descricao.value.trim().length < 5) {
-    error.value = "Descrição muito curta. A descrição precisa ter no mínimo 5 caracteres.";
+    error.value =
+      "Descrição muito curta. A descrição precisa ter no mínimo 5 caracteres.";
     return false;
   }
   return true;
@@ -45,8 +47,8 @@ const updateTarefa = async () => {
       body: {
         id: id.value,
         nome: nome.value,
-        isObrigatorio: obrigatoriedade.value,
-        isSimultanea: simultaniedade.value,
+        isObrigatorio: false,
+        isSimultanea: false,
         descricao: descricao.value, // Use 'descriao' if that's the correct property, otherwise 'descricao'
       },
     });
@@ -82,19 +84,39 @@ const updateTarefa = async () => {
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="nome" class="text-right">Nome</Label>
-          <Input id="nome" v-model="nome" class="col-span-3" placeholder="Nome da tarefa" />
+          <Input
+            id="nome"
+            v-model="nome"
+            class="col-span-3"
+            placeholder="Nome da tarefa"
+          />
         </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="obrigatoriedade" class="text-right">Obrigatória?</Label>
-          <input id="obrigatoriedade" type="checkbox" v-model="obrigatoriedade" class="col-span-3" />
-        </div>
-        <div class="grid grid-cols-4 items-center gap-4">
-          <Label for="simultaniedade" class="text-right">Simultânea?</Label>
-          <input id="simultaniedade" type="checkbox" v-model="simultaniedade" class="col-span-3" />
-        </div>
+        <!-- <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="obrigatoriedade" class="text-right">Obrigatória?</Label>
+            <input
+              id="obrigatoriedade"
+              type="checkbox"
+              v-model="obrigatoriedade"
+              class="col-span-3"
+            />
+          </div>
+          <div class="grid grid-cols-4 items-center gap-4">
+            <Label for="simultaniedade" class="text-right">Simultânea?</Label>
+            <input
+              id="simultaniedade"
+              type="checkbox"
+              v-model="simultaniedade"
+              class="col-span-3"
+            />
+          </div> -->
         <div class="grid grid-cols-4 items-center gap-4">
           <Label for="descricao" class="text-right">Descrição</Label>
-          <Input id="descricao" v-model="descricao" class="col-span-3" placeholder="Descrição" />
+          <Input
+            id="descricao"
+            v-model="descricao"
+            class="col-span-3"
+            placeholder="Descrição"
+          />
         </div>
       </div>
       <DialogFooter>
