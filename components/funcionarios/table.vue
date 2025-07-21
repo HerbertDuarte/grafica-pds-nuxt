@@ -69,6 +69,21 @@ watch(
 watch(busca, () => {
   changePage(1);
 });
+
+// Funções de formatação (máscara apenas para exibição)
+const formatarCPF = (cpf: string) => {
+  const valor = cpf.replace(/\D/g, "");
+  return valor.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+};
+
+const formatarTelefone = (telefone: string) => {
+  const valor = telefone.replace(/\D/g, "");
+  if (valor.length === 11) {
+    return valor.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
+  } else {
+    return valor.replace(/(\d{2})(\d{4})(\d{4})/, "($1) $2-$3");
+  }
+};
 </script>
 
 <template>
@@ -110,8 +125,8 @@ watch(busca, () => {
           <TableRow v-for="funcionario in paginatedItems" :key="funcionario.id">
             <TableCell class="font-medium">{{ funcionario.id }}</TableCell>
             <TableCell>{{ funcionario.nome }}</TableCell>
-            <TableCell>{{ funcionario.cpf }}</TableCell>
-            <TableCell>{{ funcionario.telefone }}</TableCell>
+            <TableCell>{{ formatarCPF(funcionario.cpf) }}</TableCell>
+            <TableCell>{{ formatarTelefone(funcionario.telefone) }}</TableCell>
             <TableCell>{{ funcionario.email }}</TableCell>
             <TableCell>{{ funcionario.cargo || "—" }}</TableCell>
             <TableCell class="flex items-end justify-end w-[200px]">
