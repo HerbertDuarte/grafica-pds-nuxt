@@ -6,7 +6,6 @@ import { useToast } from "../ui/toast";
 
 const props = defineProps<{
   funcionario: Funcionario;
-  // cargos?: { id: number; titulo: string }[] // opcional para dropdown cargo
 }>();
 
 const open = ref(false);
@@ -20,15 +19,89 @@ const cargo = ref(props.funcionario.cargo);
 const { toast } = useToast();
 const emit = defineEmits(["funcionarioAtualizado"]);
 
+const error = ref<string>();
+const limparNumero = (valor: string) => valor.replace(/\D/g, "");
+
+// Validações
+function validaNome() {
+  if (nome.value.trim().length < 3) {
+    error.value = "Nome muito curto. Mínimo 3 caracteres.";
+    return false;
+  }
+  error.value = undefined;
+  return true;
+}
+
+function validaCPF() {
+  const digitsOnly = limparNumero(cpf.value);
+  if (
+    digitsOnly.length !== 11 ||
+    !/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
+  ) {
+    error.value = "CPF inválido. Use o formato 000.000.000-00.";
+    return false;
+  }
+  error.value = undefined;
+  return true;
+}
+
+function validaTelefone() {
+  const digitsOnly = limparNumero(telefone.value);
+  if (
+    (digitsOnly.length !== 10 && digitsOnly.length !== 11) ||
+    !/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value)
+  ) {
+    error.value = "Telefone inválido. Use o formato (00) 00000-0000.";
+    return false;
+  }
+  error.value = undefined;
+  return true;
+}
+
+function validaEmail() {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    error.value = "E-mail inválido.";
+    return false;
+  }
+  error.value = undefined;
+  return true;
+}
+
+function validaCargo() {
+  if (!cargo.value) {
+    error.value = "Selecione um cargo.";
+    return false;
+  }
+  error.value = undefined;
+  return true;
+}
+
 const updateFuncionario = async () => {
+  error.value = undefined;
+
+  if (
+    !validaNome() ||
+    !validaCPF() ||
+    !validaTelefone() ||
+    !validaEmail() ||
+    !validaCargo()
+  ) {
+    toast({
+      title: "Erro no formulário",
+      description: error.value,
+      variant: "destructive",
+    });
+    return;
+  }
+
   try {
-    const response = await $fetch("/api/funcionarios/update", {
+    await $fetch("/api/funcionarios/update", {
       method: "put",
       body: {
         id: id.value,
         nome: nome.value,
-        cpf: cpf.value,
-        telefone: telefone.value,
+        cpf: limparNumero(cpf.value),
+        telefone: limparNumero(telefone.value),
         email: email.value,
         cargo: cargo.value,
       },
@@ -40,7 +113,6 @@ const updateFuncionario = async () => {
     });
 
     emit("funcionarioAtualizado");
-
     open.value = false;
   } catch (error) {
     toast({

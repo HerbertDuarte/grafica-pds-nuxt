@@ -19,38 +19,50 @@ const error = ref<string>();
 const { toast } = useToast();
 const emit = defineEmits(["clienteAtualizado"]);
 
-// Validações individuais (igual ao create)
+const limparNumero = (valor: string) => valor.replace(/\D/g, "");
+
+// Validações individuais
 function validaNome() {
   if (nome.value.trim().length < 3) {
-    error.value =
-      "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
+    error.value = "Nome muito curto. O nome precisa ter no mínimo 3 caracteres.";
     return false;
   }
+  error.value = undefined;
   return true;
 }
 
 function validaEndereco() {
   if (endereco.value.trim().length < 5) {
-    error.value =
-      "Endereço muito curto. O endereço precisa ter no mínimo 5 caracteres.";
+    error.value = "Endereço muito curto. O endereço precisa ter no mínimo 5 caracteres.";
     return false;
   }
+  error.value = undefined;
   return true;
 }
 
 function validaCPF() {
-  if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)) {
-    error.value = "CPF inválido. Use o formato 000.000.000-00.";
+  const digitsOnly = limparNumero(cpf.value);
+  if (
+    digitsOnly.length !== 11 ||
+    !/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)
+  ) {
+    error.value = "CPF inválido. Use o formato 000.000.000-00 com 11 dígitos.";
     return false;
   }
+  error.value = undefined;
   return true;
 }
 
 function validaTelefone() {
-  if (!/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value)) {
+  const digitsOnly = limparNumero(telefone.value);
+  if (
+    (digitsOnly.length !== 10 && digitsOnly.length !== 11) ||
+    !/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value)
+  ) {
     error.value = "Telefone inválido. Use o formato (00) 00000-0000.";
     return false;
   }
+  error.value = undefined;
   return true;
 }
 
@@ -59,26 +71,27 @@ function validaEmail() {
     error.value = "E-mail inválido.";
     return false;
   }
+  error.value = undefined;
   return true;
 }
 
-const limparNumero = (valor: string) => valor.replace(/\D/g, "");
-
 const updateCliente = async () => {
-  // if (
-  //   !validaNome() ||
-  //   !validaEndereco() ||
-  //   !validaCPF() ||
-  //   !validaTelefone() ||
-  //   !validaEmail()
-  // ) {
-  //   toast({
-  //     title: "Erro no formulário",
-  //     description: error.value,
-  //     variant: "destructive",
-  //   });
-  //   return;
-  // }
+  error.value = undefined; // limpa erro anterior
+
+  if (
+    !validaNome() ||
+    !validaEndereco() ||
+    !validaCPF() ||
+    !validaTelefone() ||
+    !validaEmail()
+  ) {
+    toast({
+      title: "Erro no formulário",
+      description: error.value,
+      variant: "destructive",
+    });
+    return;
+  }
 
   try {
     await $fetch("/api/clientes/update", {
@@ -99,7 +112,6 @@ const updateCliente = async () => {
     });
 
     emit("clienteAtualizado");
-
     open.value = false;
   } catch (error) {
     toast({
