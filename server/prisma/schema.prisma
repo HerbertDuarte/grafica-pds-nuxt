@@ -32,8 +32,8 @@ model Produto {
 
 model PedidoProduto {
     id        Int     @id @default(autoincrement())
-    pedido    Pedido  @relation(fields: [pedidoId], references: [id])
-    produto   Produto @relation(fields: [produtoId], references: [id])
+    pedido    Pedido  @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
+    produto   Produto @relation(fields: [produtoId], references: [id], onDelete: Cascade)
     pedidoId  Int
     produtoId Int
 }
@@ -46,7 +46,7 @@ model Pedido {
     preco_total      Float
     desconto         Float
 
-    cliente       Cliente         @relation(fields: [clienteId], references: [id])
+    cliente       Cliente         @relation(fields: [clienteId], references: [id], onDelete: Cascade)
     clienteId     Int
     pedidoProduto PedidoProduto[]
     FichaProducao FichaProducao[]
@@ -59,13 +59,13 @@ model FichaProducao {
 
     entrega DateTime @db.Timestamp(3)
 
-    pedido   Pedido @relation(fields: [pedidoId], references: [id])
+    pedido   Pedido @relation(fields: [pedidoId], references: [id], onDelete: Cascade)
     pedidoId Int
 
-    funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
+    funcionario   Funcionario @relation(fields: [funcionarioId], references: [id], onDelete: Cascade)
     funcionarioId Int
 
-    tarefa   Tarefa @relation(fields: [tarefaId], references: [id])
+    tarefa   Tarefa @relation(fields: [tarefaId], references: [id], onDelete: Cascade)
     tarefaId Int
 
     produtos FichaProducaoProduto[]
@@ -84,9 +84,9 @@ model Tarefa {
 
 model FichaProducaoProduto {
     id              Int           @id @default(autoincrement())
-    fichaProducao   FichaProducao @relation(fields: [fichaProducaoId], references: [id])
+    fichaProducao   FichaProducao @relation(fields: [fichaProducaoId], references: [id], onDelete: Cascade)
     fichaProducaoId Int
-    produto         Produto       @relation(fields: [produtoId], references: [id])
+    produto         Produto       @relation(fields: [produtoId], references: [id], onDelete: Cascade)
     produtoId       Int
     quantidade      Int           @default(1)
 

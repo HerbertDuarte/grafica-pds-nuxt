@@ -289,10 +289,6 @@ function validaTarefa() {
 }
 
 function validaProdutos() {
-  if (produtosSelecionados.value.length === 0) {
-    error.value = "Selecione pelo menos um produto.";
-    return false;
-  }
   return true;
 }
 

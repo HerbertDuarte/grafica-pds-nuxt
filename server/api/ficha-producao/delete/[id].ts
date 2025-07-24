@@ -21,8 +21,8 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  // Deletar as relações com tarefas primeiro
-  await prisma.fichaProducaoTarefa.deleteMany({
+  // Deletar as relações com produtos primeiro
+  await prisma.fichaProducaoProduto.deleteMany({
     where: { fichaProducaoId: id },
   });
 

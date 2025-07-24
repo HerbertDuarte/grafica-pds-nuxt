@@ -121,18 +121,12 @@ function validaEndereco() {
 }
 
 function validaCPF() {
-  if (!/^\d{3}\.\d{3}\.\d{3}-\d{2}$/.test(cpf.value)) {
-    error.value = "CPF inválido. Use o formato 000.000.000-00.";
-    return false;
-  }
+
   return true;
 }
 
 function validaTelefone() {
-  if (!/^\(\d{2}\) \d{4,5}-\d{4}$/.test(telefone.value)) {
-    error.value = "Telefone inválido. Use o formato (00) 00000-0000.";
-    return false;
-  }
+
   return true;
 }
 
